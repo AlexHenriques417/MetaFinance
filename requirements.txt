@@ -1,0 +1,47 @@
+MetaFinance
+Gerenciador de Finanças Pessoais & Metas
+
+Especificação do Escopo e Regras de Negócio
+
+1. Escopo do Projeto
+
+1.1. O que o sistema FAZ ( Escopo Dentro ) :
+-> Autenticação segura de usuários ( Cadastro, Login e Logout ).
+-> Gestão de Transações Financeiras ( Criar, Listar, Editar e Deletar receitas e despesas ).
+-> Categorização de Transações ( Ex: Alimentação, Moradia, Salário, Lazer ).
+-> Gestão de Metas Financeiras ( Criar metas, definir valores alvo e registrar aportes ).
+-> Painel/ Dashboard com cálculo automático de saldos e progresso de metas em tempo real.
+-> Isolamento total de dados entre usuários ( Segurança Row Level Security ).
+
+1.2. O que o sistema NÃO FAZ ( Escopo Fora ) :
+-> Integração bancária automática via Open Finance ( todas as transações são manuais ).
+-> Emissão de relatórios em PDF ou exportação para Excel ( escopo para versões futuras ).
+-> Notificações via E-mail ou Push Notification sobre vencimentos.
+-> Multi-moeda ( sistema opera exclusivamente em BRL/ R$ ).
+
+2. Regra de Negócio ( Bussiness Rules - RN )
+
+RN01 - Isolamento por usuário
+-> Todo registro ( transação, categoria ou meta ) pertence estritamente a um único usuário autenticado. Um usuário jamais poderá ver ou alterar dados de outro.
+RN02 - Cálculo do Saldo Atual
+-> O Saldo Total exibido no Dashboard deve ser obrigatoriamente calculado por: $$\text{Saldo Total} = \sum(\text{Receitas}) - \sum(\text{Despesas})$$
+RN03 - Tipagem de Transações
+-> Cada transação deve ter um tipo obrigatório: `income` (receita) ou `expense` (despesa). Valores monetários devem ser sempre maiores que zero ($> 0$).
+RN04 - Progresso de Metas
+-> O progresso percentual de uma meta financeira é calculado por: $$\text{Progresso (\%)} = \left( \frac{\text{Valor Atual}}{\text{Valor Alvo}} \right) \times 100$$
+RN05 - Aporte em Metas
+-> O valor aportado em uma meta não pode ser negativo. Se o `Valor Atual` atingir ou ultrapassar o `Valor Alvo`, a meta deve ter seu status alterado visualmente para "Concluída".
+RN06 - Exclusão de Categorias
+-> Se uma categoria possuir transações vinculadas, ela não poderá ser deletada sem que as transações sejam reatribuidas ou removidas (Integridade Referencial).
+
+3. Requisitos Não-Funcionais ( RNF )
+
+RNF01 - Interface Responsiva 
+-> O layout deve se adaptar perfeitamente a dispositivos móveis (smartphones) e desktops.
+RNF02 - Persistência 
+-> Todos os dados devem ser salvos no banco de dados relacional (Supabase PostgreSQL).
+RNF03 - Desempenho
+-> O carregamento inicial da Dashboard e atualização de saldos deve ocorrer em menos de 2 segundos sob conexões normais.
+RNF04 - Arquitetura Limpa
+-> O código Front-End utilizará JavaScript ES6 Vanilla estruturado em módulos (`type="module"`), sem dependência de frameworks externos como React ou Vue.
+

@@ -1,0 +1,85 @@
+1. Árvore da Estrutura de Pastas (Vanilla ES6)
+
+metafinance/
+│
+├── index.html              # Ponto de entrada (HTML principal / SPA)
+├── style.css               # Estilos globais e variáveis CSS (Design System)
+├── architecture.txt        # Documentação interna de decisões de engenharia
+├── requirements.txt        # Escopo e regras de negócio
+├── schema.txt              # Modelo relacional de dados
+│
+└── src/                    # Código-fonte JavaScript
+    ├── config/
+    │   └── supabase.js     # Inicialização e cliente do Supabase
+    │
+    ├── services/           # CAMADA DE API (Comunicação externa)
+    │   ├── authService.js         # Métodos de Login, Cadastro e Logout
+    │   ├── transactionService.js  # CRUD de Receitas/Despesas
+    │   ├── goalService.js         # CRUD e Aportes de Metas
+    │   └── categoryService.js     # Busca e criação de Categorias
+    │
+    ├── ui/                 # CAMADA DE UI (Manipulação do DOM)
+    │   ├── components/            # Componentes visuais isolados
+    │   │   ├── navbar.js          # Header/Navegação
+    │   │   ├── modal.js           # Gerenciador de Modais universais
+    │   │   └── toast.js           # Notificações na tela (Sucesso/Erro)
+    │   │
+    │   └── views/                 # Telas/Páginas da aplicação
+    │       ├── authView.js        # Formitários de Login/Registro
+    │       ├── dashboardView.js   # Resumo de Cards e Gráficos
+    │       ├── transactionsView.js# Tabela de Extrato e Filtros
+    │       └── goalsView.js       # Lista e Barra de Progresso das Metas
+    │
+    ├── state/              # CAMADA DE ESTADO
+    │   └── appState.js     # Armazenamento central de dados na memória (User, Transactions)
+    │
+    ├── utils/              # UTILITÁRIOS & HELPERS
+    │   ├── formatters.js   # Formatação de Moeda (BRL) e Datas
+    │   └── validators.js   # Validação de e-mails, senhas e inputs
+    │
+    └── main.js             # Módulo Raiz (Orquestrador do app e Rotas)
+
+
+2. Padrão de Separação de Responsabilidades
+Explicação detalhada de cada módulo para colocar no seu Notion e architecture.txt:
+
+A. Ponto de Entrada (index.html + main.js)
+O index.html importa apenas um arquivo JS usando a tag nativa de módulos:
+<script type="module" src="./src/main.js"></script>
+O main.js atua como o orquestrador. Ele verifica se o usuário está logado via authService.js e chama a renderização das views apropriadas.
+
+B. Camada de Serviços (src/services/)
+Responsabilidade: Única e exclusivamente interagir com o SDK do Supabase.
+Nenhum arquivo aqui conhece o HTML ou sabe que o DOM existe. 
+Eles recebem dados simples (objetos/strings) e retornam promessas (async/await).
+
+C. Camada de Interface (src/ui/)
+Responsabilidade: Renderizar elementos no HTML, capturar eventos de botão/submit e exibir alertas.
+As views chamam os services para buscar/salvar dados. 
+Em seguida, atualizam os elementos do DOM com o resultado.
+
+D. Camada de Estado Local (src/state/appState.js)
+Manter em memória os dados recebidos para evitar requisições repetidas ao banco (ex: dados do usuário logado, lista de categorias padrões).
+
+E. Utilitários (src/utils/)
+formatters.js: Funções puras para transformar números em BRL e datas ISO em formato PT-BR
+validators.js: Funções para garantir que os valores digitados nos inputs sejam válidos antes de enviar para o banco.
+
+3. Arquitetura de Software
+
+3.1. TECNOLOGIAS:
+   - Front-End: HTML5, CSS3, JavaScript (ES6+ Vanilla Modules)
+   - Back-End/BaaS: Supabase (PostgreSQL + Auth + RLS)
+   - Deploy: Vercel
+
+3.2. PADRÃO DE ARQUITETURA:
+   - Modularização nativa via ES6 (`import` / `export`).
+   - Separação em camadas:
+     * UI/Views: Responsável apenas por DOM e eventos.
+     * Services: Responsável pela comunicação com o Supabase SDK.
+     * State: Gerenciamento do estado da aplicação em memória.
+     * Utils: Funções puras de formatação e validação.
+
+3.3. SEGURANÇA:
+   - Autenticação gerenciada pelo Supabase Auth.
+   - Políticas de controle de acesso ativadas via Row Level Security (RLS) no banco.
