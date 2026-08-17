@@ -1,0 +1,51 @@
+// Configuração do Banco de Dados do Gerenciador Finanças/Metas
+
+Table profiles {
+  id uuid [pk, note: 'Links directly to auth.users.id in Supabase']
+  full_name text
+  updated_at timestamp [default: `now()`]
+}
+
+Table categories {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [ref: > profiles.id, note: 'Permite categorias customizadas por usuário']
+  name varchar [not null]
+  type varchar [not null, note: 'income ou expense']
+  icon varchar
+  created_at timestamp [default: `now()`]
+}
+
+Table transactions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > profiles.id]
+  category_id uuid [ref: > categories.id]
+  description text [not null]
+  amount numeric(12, 2) [not null]
+  type varchar [not null, note: 'income ou expense']
+  date date [not null]
+  created_at timestamp [default: `now()`]
+}
+
+Table goals {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > profiles.id]
+  title varchar [not null]
+  target_amount numeric(12, 2) [not null]
+  current_amount numeric(12, 2) [default: 0]
+  deadline date
+  created_at timestamp [default: `now()`]
+}
+
+--------------------------------------------
+
+Relacionamentos Mapeados (Cardinalidades)
+
+• `profiles` —> `transactions`: $1 : N$ (Um perfil possui várias transações; uma transação pertence a apenas um perfil).
+
+• `profiles` —> `goals`: $1 : N$ (Um perfil possui várias metas; uma meta pertence a apenas um perfil).
+
+• `categories` —> `transactions`: $1 : N$ (Uma categoria pode estar associada a várias transações).
+
+• `profiles` —> `categories`: $1 : N$ (Um perfil pode criar várias categorias customizadas).
+
+

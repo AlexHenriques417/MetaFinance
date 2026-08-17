@@ -1,0 +1,90 @@
+/* ========================================================
+   VARIABLES & DESIGN SYSTEM
+   ======================================================== */
+   :root {
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-card: #334155;
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    
+    --color-income: #10b981;  /* Verde para receitas */
+    --color-expense: #ef4444; /* Vermelho para despesas */
+    --color-accent: #6366f1;  /* Roxo/Índigo para ações e destaques */
+    --color-accent-hover: #4f46e5;
+    
+    --border-color: #475569;
+    --radius: 8px;
+    --transition: all 0.2s ease-in-out;
+  }
+  
+  /* RESET BASE */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+  
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* UTILITIES */
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+  
+  .btn {
+    background-color: var(--color-accent);
+    color: #ffffff;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+  }
+  
+  .btn:hover {
+    background-color: var(--color-accent-hover);
+  }
+  
+  /* DASHBOARD GRID & CARDS */
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+  
+  .card h3 {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+  
+  .card .amount {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+  
+  .amount.income { color: var(--color-income); }
+  .amount.expense { color: var(--color-expense); }
